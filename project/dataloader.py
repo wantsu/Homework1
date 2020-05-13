@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import numpy as np
 import gensim
-from gensim.models.word2vec import LineSentence
+from gensim.models import Word2Vec
 from torch.utils.data import DataLoader, TensorDataset
 import torch
 
@@ -45,7 +45,7 @@ def load_data(batch_size):
     # 訓練CBOW 模型
     if os.path.exists("./word2Vec.bin"):
         print("loading word2vec model...\n")
-        model = gensim.models.KeyedVectors.load_word2vec_format("./word2Vec.bin", binary=True)  # 加載詞向量模型
+        model = Word2Vec.load('wordvec')  # 加載詞向量模型
     else:
         # 合併兩個frame用以訓練詞向量工具Word2vec
         print('Training word2vec model...\n')
@@ -58,8 +58,7 @@ def load_data(batch_size):
         vocab_size = len(words)
         print("Vocab size", vocab_size)
         model.train(documents, total_examples=len(documents), epochs=16)
-        #model.save("wordvec")  # 保存訓練好的詞向量模型
-        model.wv.save_word2vec_format("./word2Vec" + ".bin", binary=True)
+        model.save("wordvec")  # 保存訓練好的詞向量模型
 
 
     # 獲取文本向量
