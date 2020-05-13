@@ -25,7 +25,7 @@ out_feature = 2
 
 model_name = 'MLP'
 
-## 初始化模型
+## choose model
 if model_name == 'MLP':
     model = MLP(in_feature, out_feature)
 elif model_name == 'CNN':
@@ -70,20 +70,20 @@ for epoch in range(num_epochs):
     R.append(r)
     F1.append(f1)
     print('Epoch:', (epoch + 1), '\n', report)
-
-plt.subplot(2, 2, 1)  # 两行两列，plt.subplot('行','列','编号')
+# plot loss, precision, recall and f1
+plt.subplot(2, 2, 1)
 plt.plot([i + 1 for i in range(len(Lost))], Lost)
 plt.ylabel('lost')
-plt.subplot(2, 2, 2)  # 两行两列,这是第二个图
+plt.subplot(2, 2, 2)
 plt.plot([i + 1 for i in range(num_epochs)], P)
 plt.ylabel('precision')
-plt.subplot(2, 2, 3)  # 两行两列,这是第三个图
+plt.subplot(2, 2, 3)
 plt.plot([i + 1 for i in range(num_epochs)], R)
 plt.ylabel('recall')
-plt.subplot(2, 2, 4)  # 两行两列,这是第四个图
+plt.subplot(2, 2, 4)
 plt.plot([i + 1 for i in range(num_epochs)], F1)
 plt.ylabel('f1')
 plt.show()
 
-# 保存模型
+# Save DL model
 torch.save(model, model_name)

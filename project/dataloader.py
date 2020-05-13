@@ -7,17 +7,17 @@ from gensim.models import Word2Vec
 from torch.utils.data import DataLoader, TensorDataset
 import torch
 
-# 大小寫轉換，去數字，分詞，去停用詞
+# lower case, cutword, stopwords
 def read_data(data_path):
     data = pd.read_table(data_path, encoding='latin-1', sep='\t', names=['text'])
-    data = data['text'].str.lower()  # 大小寫轉換
-    data = data.str.replace('\d+', '')  # 去數字
-    for index in data.index:   # 分詞
+    data = data['text'].str.lower()  #  change to lower case
+    data = data.str.replace('\d+', '')  # ride of digits
+    for index in data.index:   # cutwords
         data[index] = ' '.join(word_tokenize(data[index]))
     return data
 
 
-# 獲取將每條tweet 轉化爲文本向量
+# vectorize tweet
 def getVector_v2(cutWords, word2vec_model):
     vector_list = [word2vec_model[k] for k in cutWords if k in word2vec_model]
     vector_df = pd.DataFrame(vector_list)
@@ -34,7 +34,7 @@ def getVector_text(tweets, word2vec_model):
 
 
 def load_data(batch_size):
-    # 讀取數據
+    # read data
     train_x_path, test_x_path = '../Data/train_X.txt', '../Data/test_X.txt'
     train_y_path, test_y_path = '../Data/train_Y.txt', '../Data/test_Y.txt'
     train_x = read_data(train_x_path)
@@ -42,12 +42,12 @@ def load_data(batch_size):
     train_y = pd.read_table(train_y_path, encoding='latin-1', sep='\t', names=['label'])['label']
     test_y = pd.read_table(test_y_path, encoding='latin-1', sep='\t', names=['label'])['label']
 
-    # 訓練CBOW 模型
+    # trianing CBOW model
     if os.path.exists("./word2Vec"):
         print("loading word2vec model...\n")
-        model = Word2Vec.load('wordvec')  # 加載詞向量模型
+        model = Word2Vec.load('wordvec')  # load word2Vec
     else:
-        # 合併兩個frame用以訓練詞向量工具Word2vec
+        # merge two frame as corpus or training Word2Vec
         print('Training word2vec model...\n')
         frames = [train_x, test_x]
         corpus = pd.concat(frames)
@@ -56,12 +56,12 @@ def load_data(batch_size):
         model.build_vocab(documents)
         words = model.wv.vocab.keys()
         vocab_size = len(words)
-        print("Vocab size", vocab_size)
+        print("Vocab size\n", vocab_size)
         model.train(documents, total_examples=len(documents), epochs=16)
-        model.save("wordvec")  # 保存訓練好的詞向量模型
+        model.save("wordvec")  # save language model
 
 
-    # 獲取文本向量
+    # vecterizing text
     print('Loading text vectors...\n')
     train_x = getVector_text(train_x, model)
     test_x = getVector_text(test_x, model)

@@ -29,7 +29,7 @@ if __name__ == '__main__':
     model_name = 'MLP'
     batch_size = 256
     if os.path.exists(model_name):
-        model = torch.load(model_name)   # 加载模型
+        model = torch.load(model_name)   # loading DL model
         _, test_loader = load_data(batch_size)
         p, r, f1, report = Metrics(model, test_loader)
         print('Test precisison:', p, 'recall:', r, 'f1:', f1)
