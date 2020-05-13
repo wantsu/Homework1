@@ -43,7 +43,7 @@ def load_data(batch_size):
     test_y = pd.read_table(test_y_path, encoding='latin-1', sep='\t', names=['label'])['label']
 
     # 訓練CBOW 模型
-    if os.path.exists("./word2Vec.bin"):
+    if os.path.exists("./word2Vec"):
         print("loading word2vec model...\n")
         model = Word2Vec.load('wordvec')  # 加載詞向量模型
     else:
